@@ -78,7 +78,7 @@ int main() {
         // Use key=value form to avoid URL-encoding hassles with '@' in passwords.
         // CHANGE the password/dbname if you used different values.
         const char* conninfo =
-            "host=localhost port=5432 dbname=immutable_demo user=postgres password=Kabir@2007Postgres";
+            "host=localhost port=5432 dbname=immutable_demo user=postgres password=password";
         pqxx::connection c{conninfo};
 
         // Prepare SQL statements once
