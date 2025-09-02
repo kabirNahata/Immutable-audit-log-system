@@ -6,7 +6,6 @@ void insertOrder(pqxx::connection& c) {
     std::string name, status;
     double amount;
 
-    // DO NOT ignore() here; we already did it after reading the menu choice.
     std::cout << "Enter customer name: ";
     std::getline(std::cin, name);
 
