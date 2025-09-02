@@ -126,8 +126,3 @@ Configures the build using CMake.
 - [PostgreSQL Documentation](https://www.postgresql.org/docs/)
 - [pgcrypto Extension](https://www.postgresql.org/docs/current/pgcrypto.html)
 
----
-
-## Contact
-
-For questions or contributions,
