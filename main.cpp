@@ -13,7 +13,7 @@ void insertOrder(pqxx::connection& c) {
     std::cin >> amount;
     std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n'); // clear newline
 
-    std::cout << "Enter status (e.g., NEW): ";
+    std::cout << "Enter status (NEW,PAID,CANCELLED): ";
     std::getline(std::cin, status);
 
     pqxx::work tx{c};
@@ -77,7 +77,7 @@ int main() {
         // Use key=value form to avoid URL-encoding hassles with '@' in passwords.
         // CHANGE the password/dbname if you used different values.
         const char* conninfo =
-            "host=localhost port=5432 dbname=immutable_demo user=postgres password=password";
+            "host=localhost port=5432 dbname=immutable_demo user=postgres password=Kabir@2007Postgres)";
         pqxx::connection c{conninfo};
 
         // Prepare SQL statements once
