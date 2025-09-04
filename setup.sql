@@ -38,7 +38,7 @@ CREATE TABLE audit_log (
 );
 
 -- Disallow update/delete
-REVOKE UPDATE, DELETE ON audit_log FROM PUBLIC;
+REVOKE UPDATE, DELETE ON audit_log FROM PUBLIC; -- to restrict all users use REVOKE ... FROM <role>; eg ADMIN
 
 CREATE OR REPLACE FUNCTION trg_audit_block_change()
 RETURNS TRIGGER LANGUAGE plpgsql AS $$
@@ -66,16 +66,21 @@ CREATE OR REPLACE FUNCTION audit_compute_hash(
 ) RETURNS BYTEA
 LANGUAGE sql IMMUTABLE AS $$
   SELECT digest(
-           coalesce(encode(p_prev_hash,'hex'),'') || '|' ||
-           to_char(p_ts AT TIME ZONE 'UTC','YYYY-MM-DD"T"HH24:MI:SS.US"Z"') || '|' ||
-           p_actor || '|' || p_action || '|' || p_entity || '|' || p_entity_id || '|' ||
-           coalesce((SELECT string_agg(kv, ',' ORDER BY kv)
-                    FROM (
-                      SELECT key || ':' || value::text AS kv
-                      FROM jsonb_each(p_data)
-                    ) s), ''),
-           'sha256'
-         );
+  concat_ws( '|',
+    coalesce(encode(p_prev_hash, 'hex'), ''),
+    to_char(p_ts AT TIME ZONE 'UTC', 'YYYY-MM-DD"T"HH24:MI:SS.US"Z"'),
+    p_actor,
+    p_action,
+    p_entity,
+    p_entity_id,
+    coalesce((
+      SELECT jsonb_object_agg(key, value)
+      FROM jsonb_each(p_data)
+      ORDER BY 1
+    )::text, '')
+  ),
+  'sha256'
+);
 $$;
 
 -- 4) Chain trigger for audit_log
